@@ -1,0 +1,267 @@
+if (`window -exists myWindow`)
+deleteUI myWindow;
+
+window -title "Quick_LocknHide_v2" -w 300 -h 100 myWindow;
+
+columnLayout -rs 3;
+rowColumnLayout -numberOfColumns 1;
+
+
+checkBoxGrp -ncb 3 -label "Translation" -labelArray3 "X" "Y""Z" -cal 1 "center" checkTrans;
+checkBoxGrp -ncb 3 -label "Rotation" -labelArray3 "X" "Y""Z" -cal 1 "center" checkOri;
+checkBoxGrp -ncb 3 -label "Scale" -labelArray3 "X" "Y""Z" -cal 1 "center" checkScale;
+checkBoxGrp -ncb 1 -label "Visiblity" -label1 "Visiblity" -cal 1 "center" checkVis;
+
+
+button -l "Lock N hide" -w 300 -h 30 -al "center" -c "quickLockNhide(1)" ;
+button -l "UnLock N UnHide" -w 300 -h 30 -al "center" -c "quickLockNhide(2)" ;
+
+separator;
+rowColumnLayout -numberOfColumns 1;
+
+radioButtonGrp -numberOfRadioButtons 3 -label "Controller Display Type" -labelArray3 "None" "Template" "Reference" -sl 1 applyCtrlGrp;
+
+
+button -l "Apply on Controller" -w 300 -h 30 -c "applyCtrl";
+
+radioButtonGrp -numberOfRadioButtons 3 -label "Joint Display Style" -labelArray3 "Bone" "None" "Multi Child As Box" -sl 1 applyJntGrp;
+
+button -l "Apply on Joints/Bones" -w 300 -h 30 -c "applyJnt";
+ 
+showWindow myWindow;
+
+//Main Function
+global proc quickLockNhide(int $choice)
+{///////dataaaaa///////
+    string $sel[] = `ls -sl`;
+    string $selDriver = $sel[0];
+
+    int $error = 0;
+    //translation data
+    int $tx =`checkBoxGrp -query -v1 checkTrans`;
+    int $ty =`checkBoxGrp -query -v2 checkTrans`;
+    int $tz =`checkBoxGrp -query -v3 checkTrans`;
+    //rotation data
+    int $rx =`checkBoxGrp -query -v1 checkOri`;
+    int $ry =`checkBoxGrp -query -v2 checkOri`;
+    int $rz =`checkBoxGrp -query -v3 checkOri`;
+    //scale data
+    int $sx =`checkBoxGrp -query -v1 checkScale`;
+    int $sy =`checkBoxGrp -query -v2 checkScale`;
+    int $sz =`checkBoxGrp -query -v3 checkScale`;
+
+    int $vis = `checkBoxGrp -query -v1 checkVis`;
+    //LocknHide
+    if ($choice == 1)
+    {
+    //display error
+    if (size($sel) <= 0)
+    {
+        warning "Select 1 or more Objects. Parent first and then the child";
+        $error = 1;
+    }
+
+    //translate
+    if ($error == 0)
+    {
+    if ($tx == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".translateX");   
+    }
+    if ($error == 0)
+    {
+    if ($ty == 1)
+    
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".translateY");
+    }     
+    if ($error == 0)
+    {
+    if ($tz == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".translateZ");
+    }
+    //rotate
+    if ($error == 0)
+    {
+    if ($rx == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".rotateX");   
+    }
+    if ($error == 0)
+    {
+    if ($ry == 1)    
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".rotateY");
+    }     
+    if ($error == 0)
+    {
+    if ($rz == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".rotateZ");
+    }
+    //scale 
+    if ($error == 0)
+    {
+    if ($sx == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".scaleX");   
+    }
+    if ($error == 0)
+    {
+    if ($sy == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".scaleY");
+    }     
+    if ($error == 0)
+    {
+    if ($sz == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".scaleZ");
+    }
+    if ($error == 0)
+    {
+    if ($vis == 1)
+        setAttr -lock true -keyable false -channelBox false ($selDriver + ".v");
+    }
+    }
+    //UnLocknUnHide
+    if ($choice == 2)
+    {
+    //display error
+    if (size($sel) <= 0)
+    {
+        warning "Select 1 or more Objects. Parent first and then the child";
+        $error = 1;
+    }
+
+    //translate
+    if ($error == 0)
+    {
+    if ($tx == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".translateX");   
+    }
+    if ($error == 0)
+    {
+    if ($ty == 1)
+    
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".translateY");
+    }     
+    if ($error == 0)
+    {
+    if ($tz == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".translateZ");
+    }
+    //rotate
+    if ($error == 0)
+    {
+    if ($rx == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".rotateX");   
+    }
+    if ($error == 0)
+    {
+    if ($ry == 1)    
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".rotateY");
+    }     
+    if ($error == 0)
+    {
+    if ($rz == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".rotateZ");
+    }
+    //scale 
+    if ($error == 0)
+    {
+    if ($sx == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".scaleX");   
+    }
+    if ($error == 0)
+    {
+    if ($sy == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".scaleY");
+    }     
+    if ($error == 0)
+    {
+    if ($sz == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".scaleZ");
+    }
+    if ($error == 0)
+    {
+    if ($vis == 1)
+        setAttr -lock false -keyable true -channelBox false ($selDriver + ".v");
+    }
+    }
+}
+
+
+global proc applyCtrl()
+{
+    string $control = `radioButtonGrp -query -select applyCtrlGrp`;
+
+    string $selection[] = `ls -sl`;
+    int $noSel = size($selection);
+    string $s;
+    string $t;
+    string $u;
+
+
+    if ($noSel == 0)
+    {
+        error "No controller selected";
+    }
+    if ($control == 1) ///none
+    {
+        for ($s in $selection)
+        {
+            setAttr ($s + ".overrideEnabled") 0;
+            setAttr ($s + ".overrideDisplayType") 0;
+            //setAttr "nurbsCircleShape1.overrideDisplayType" 1;
+        }    
+    }
+    if ($control == 2) //template
+    {
+        for ($t in $selection)
+        {
+            setAttr ($t + ".overrideEnabled") 1;
+            setAttr ($t + ".overrideDisplayType") 1;
+            //setAttr "nurbsCircleShape1.overrideDisplayType" 1;
+        }    
+    }
+    if ($control == 3) //reference
+    {
+        for ($u in $selection)
+        {
+            setAttr ($u + ".overrideEnabled") 1;
+            setAttr ($u + ".overrideDisplayType") 2;
+            //setAttr "nurbsCircleShape1.overrideDisplayType" 1;
+        }    
+    }     
+}
+
+global proc applyJnt()
+{
+    string $joint = `radioButtonGrp -query -select applyJntGrp`;
+
+    string $selectionjnt[] = `ls -sl`;
+    int $noSelJnt = size($selectionjnt);
+    string $a;
+    string $b;
+    string $c;
+
+
+    if ($noSelJnt == 0)
+    {
+        error "No controller selected";
+    }
+    if ($joint == 1) ///bone
+    {
+        for ($a in $selectionjnt)
+        {
+            setAttr ($a + ".drawStyle") 0;
+        }    
+    }
+    if ($joint == 2) //none
+    {
+        for ($b in $selectionjnt)
+        {
+            setAttr ($b + ".drawStyle") 2;
+        }    
+    }
+    if ($joint == 3) //multi child as box
+    {
+        for ($c in $selectionjnt)
+        {
+            setAttr ($c + ".drawStyle") 1;
+        }    
+    }     
+} 

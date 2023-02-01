@@ -1,0 +1,112 @@
+//Renamer
+//User interface
+if (`window -exists qRenamer`)
+deleteUI qRenamer;
+
+window -title "quickRenamer" -w 300 -h 100 qRenamer;
+
+columnLayout -rs 2;
+
+rowColumnLayout -nc 1;
+
+textFieldGrp -adj 1 -l "Prefix" -editable true -cal 1 "center" prefixName;
+separator -style "none" -h 4;
+button -l "Add Prefix" -w 300 -h 20 -c "renamer(0);";
+setParent "..";
+
+separator -style "single" -h 4;
+
+rowColumnLayout -nc 1;
+
+textFieldGrp -adj 1 -l "Suffix" -editable true -cal 1 "center" suffixName;
+separator -style "none" -h 4;
+button -l "Add Suffix" -w 300 -h 20 -c "renamer(1);";
+setParent "..";
+
+separator -style "single" -h 4;
+
+rowColumnLayout -nc 1;
+
+radioButtonGrp -numberOfRadioButtons 3 -labelArray3 "Hierarchy" "Selected" "All" -cl3 "center" "center" "center" -sl 1 selName;
+separator -style "single" -h 4;
+
+
+
+rowColumnLayout -nc 1;
+
+textFieldGrp -adj 1 -l "Search" -editable true -cal 1 "center" search;
+textFieldGrp -adj 1 -l "Replace" -editable true -cal 1 "center" replace;
+separator -style "none" -h 4;
+button -l "Search and Replace" -w 300 -h 20 -c "renamer(2);";
+setParent "..";
+
+
+showWindow qRenamer;
+
+global proc renamer(int $mode)
+{
+    string $sel[] = `ls -sl -long`;
+    int $noSel = size($sel);
+    int $i;
+    
+
+    string $prefix = `textFieldGrp -query -text prefixName`;
+    string $suffix = `textFieldGrp -query -text suffixName`;
+    string $searchName = `textFieldGrp -query -text search`;
+    string $replaceName = `textFieldGrp -query -text replace`;
+    string $selRad = `radioButtonGrp -query -select selName`;
+    string $shortName;
+    string $newShortName;
+    string $newName;
+
+        for ($i=0; $i < $noSel; ++$i)
+        {
+	$obj = $sel[$i];
+	
+	$shortName = $obj;
+    
+    switch ($mode)
+        {
+        case 0:
+            if ($prefix == "")
+            {
+            warning -sl 0 ("Prefix field is blank");
+            return;
+            }
+        $newShortName = `rename($prefix + $shortName)`;
+        break;
+
+        case 1:
+            if ($suffix == "")
+            {
+            warning -sl 0 ("Suffix field blank");
+            return;
+            }
+        $newShortName = `rename($shortName + "_" + $suffix)`;
+        break;
+
+        case 2:
+            if ($searchName == "" || $replaceName == "")
+            {
+            warning -sl 0 ("Search/Replace field is blank");
+            return;
+            }
+        if ($selRad == 1)
+        {
+            $newShortName = searchReplaceNames($searchName, $replaceName, "hierarchy");
+        }
+        if ($selRad == 2)
+        {
+            $newShortName = searchReplaceNames($searchName, $replaceName, "selected");
+        }
+        if ($selRad == 3)
+        {
+            $newShortName = searchReplaceNames($searchName, $replaceName, "all");
+        }
+        break;              
+
+        }
+        }
+
+}
+

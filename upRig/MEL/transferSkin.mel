@@ -1,0 +1,21 @@
+global proc up_transferSkinWeights(string $sourceVtx[], string $destVtx[], string $sourceInf, string $destInf, string $holdInf)
+{
+    if ( size($sourceVtx) != size($destVtx) )
+        error "\nNumber of source/dest vertices should be same."
+
+    string $sourceObj[], $destObj[];
+    tokenize $sourceVtx[0] "." $sourceObj;
+    tokenize $destVtx[0] "." $destObj;
+
+    for ($i=0; $i<size($sourceVtx); $i++)
+    {
+        string $sourceSkin = `findRelatedSkinCluster(string $sourceObj[0])`;
+        string $destSkin = `findRelatedSkinCluster(string $destObj[0])`;
+
+        float $sourceInf_value = `skinPercent -transform $sourceInf -query $sourceSkin $sourceVtx[$i]`;
+        float $holdInf_value = `skinPercent -transform $holdInf -query $destSkin $destVtx[$i]`;
+        $holdInf_value = $holdInf_value - $sourceInf_value;
+
+        skinPercent -transformValue $holdInf $holdInf_value -transformValue $destInf $sourceInf_value $destSkin $destVtx[$i];
+    }
+}
