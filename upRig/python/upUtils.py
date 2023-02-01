@@ -210,7 +210,7 @@ def connector(): # function for connector
             mc.connectAttr(selDriver+".scaleZ", selDriven+".scaleZ", f=True)
 
 
-def deformerValToOne():
+def deformerValToOne(): #Deformer weights can cross the max influence value and to bring it to max influence value this function can be used
     defMesh = 'facial_GEO'
     listHis = mc.listHistory(defMesh, ac=1)
     for ech in listHis:
@@ -223,3 +223,14 @@ def deformerValToOne():
                 if weightVal > 1.0:
                     print ('%s has weight value more than 1 : value is %s : deformerName : %s' %(vrt, weightVal, ech))
                     mc.percent(ech, vrt, v=1)
+
+                    
+                    
+def upCentreJoint(): #Create single joint on any vert, edge, face selected 
+    b = mc.xform(q=1, bb=1, ws=1)
+    centreX = (b[0] + b [3]) / 2
+    centreY = (b[1] + b [4]) / 2
+    centreZ = (b[2] + b [5]) / 2
+    
+    jnt = mc.joint(n="joint1", p=[centreX, centreY, centreZ], raidus=1)
+    mc.parent=(jnt, ws=1)
